@@ -1,0 +1,150 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #171717;
+  width: 100%;
+  font-family: Montserrat, sans-serif;
+  user-select: none; }
+
+* {
+  box-sizing: border-box; }
+
+.navigation__bar {
+  display: flex;
+  justify-content: space-between;
+  width: 90%; }
+
+.score {
+  font-size: 2em;
+  color: white;
+  flex-wrap: nowrap; }
+
+.life {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background-color: #fff;
+  margin: .5em; }
+
+.rainbow__off {
+  margin-bottom: 3em;
+  display: flex; }
+
+button {
+  display: inline-block;
+  width: 80px;
+  height: 40px;
+  background: green;
+  border: 3px solid grey;
+  border-radius: 25px;
+  color: white;
+  font-size: 1em;
+  cursor: pointer; }
+
+.button--active {
+  background: red;
+  transition: background 2s ease-in-out; }
+
+span {
+  margin-right: .5em;
+  font-size: 2em;
+  color: white; }
+
+.container {
+  height: 100vh;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-around;
+  width: 90%;
+  height: 500px; }
+
+.key-row {
+  display: flex; }
+
+.key {
+  display: flex;
+  color: #eee;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #222, inset 0 1px 3px rgba(255, 255, 255, 0.1);
+  transition: 0.1s;
+  justify-content: center;
+  align-items: center;
+  height: 88px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  margin: 0 14px 0 0;
+  cursor: pointer;
+  transition: background .5s ease-in-out;
+  font-size: 1.5em; }
+
+.key:active {
+  transform: translateY(1px);
+  background: #333;
+  box-shadow: 0 1px 0 #000; }
+
+.one {
+  flex: 1; }
+
+/* one */
+.one-one-half {
+  flex: 1.5; }
+
+/* One and one half */
+.two {
+  flex: 2; }
+
+/* two */
+.two-two-half {
+  flex: 2.5; }
+
+/* Two and two half */
+.three {
+  flex: 3; }
+
+/* three */
+.space {
+  flex: 6; }
+
+.key-row .key:last-child {
+  margin: 0; }
+
+.l {
+  justify-content: flex-start;
+  padding: .8em;
+  font-size: 1.3em; }
+
+.r {
+  justify-content: flex-end;
+  padding: .8em;
+  font-size: 1.3em; }
+
+.key--active {
+  transform: scale(1.07);
+  margin-right: 14px;
+  border: 3px solid gold;
+  color: gold;
+  background-color: #171717;
+  box-shadow: 0px 0px 75px -25px rgba(224, 245, 103, 0.69);
+  transition: all .5s ease-in; }
+
+.key--wrong {
+  transform: scale(1.07);
+  border: 3px solid red;
+  color: red;
+  background-color: #171717;
+  box-shadow: 0px 0px 75px -15px rgba(255, 3, 3, 0.69); }
+
+.key--correct {
+  transform: scale(1.07);
+  border: 3px solid green;
+  color: green;
+  background-color: #171717;
+  box-shadow: 0px 0px 75px -15px rgba(5, 168, 11, 0.69); }
+
+/*# sourceMappingURL=style.css.map */
