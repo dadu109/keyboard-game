@@ -52,15 +52,27 @@ rainbowBtn.addEventListener("click", () => {
 // Random key picker
 
 const checkTime = () => {
-  console.log(allKeys[randomKeyIndex].classList.contains("key--active"));
   if (allKeys[randomKeyIndex].classList.contains("key--active")) {
     setTimeout(() => {
-      // lifes[lifes.length - 1].classList.remove("life");
-      // lifes.splice(lifes.length - 1);
-    }, timer);
+      if(allKeys[randomKeyIndex].classList.contains("key--active")){
+
+      lifes[lifes.length - 1].classList.remove("life");
+      lifes.splice(lifes.length - 1);
+      }
+    }, timer-60);
   }
 };
+const checkLifes = ()=>{
+  if (lifes.length == 0) {
+    alert(`Your lifes have been finished. Your score is ${scoreHandler}!`)
+    console.log("LOSE");
+    stopRandIndexFlag = false
+    // timer=0;
+  }
+}
 const randKeyIndexFnc = () => {
+  checkLifes()
+  
   if (stopRandIndexFlag) {
     if (scoreHandler % 5 == 0 && scoreHandler != 0) {
       timer -= 50;
@@ -76,13 +88,13 @@ const randKeyIndexFnc = () => {
     setTimeout(() => {
       allKeys[randomKeyIndex].classList.remove("key--active");
     }, timer - 50);
-    setTimeout(randKeyIndexFnc, timer);
     checkTime();
-    if (lifes.length == 0) {
-      console.log("LOSE");
-      return;
-    }
+
+    setTimeout(randKeyIndexFnc, timer);
+    
+  
   }
+  
 };
 
 randKeyIndexFnc();
@@ -103,14 +115,20 @@ const pickRandomKey = e => {
       pressedCorrectKey.classList.remove("key--active");
     }
   } else {
+    checkLifes()
+
     lifes[lifes.length - 1].classList.remove("life");
-    pressedCorrectKey.classList.add("key--correct");
-    stopRandIndexFlag = false;
+    lifes.splice(lifes.length - 1);
+    // pressedCorrectKey.classList.add("key--correct");
+    allKeys[randomKeyIndex].classList.remove("key--active");
+
+    // stopRandIndexFlag = false;
     const containsClassKeyWrong = allKeys.filter(key =>
       key.classList.contains("key--wrong")
     );
     if (containsClassKeyWrong.length === 0) {
       pressedWrongKey.classList.add("key--wrong");
+      setTimeout(()=>pressedWrongKey.classList.remove("key--wrong"),400)
     }
     // rainbowBtn.disabled = true;
     // rainbowStop();
