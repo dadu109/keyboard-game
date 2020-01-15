@@ -96,8 +96,8 @@ const checkLifes = () => {
     menuContainerDiv.style.transform = "translate(-50%,-50%)";
     containerDiv.style.filter = "blur(3px)";
 
-    playBtn.textContent = "PLAY AGAIN";
-    rankBtn.style.display = "none";
+    // playBtn.textContent = "PLAY AGAIN";
+    // rankBtn.style.display = "none";
     // menuContainerDiv.textContent = `
     // You Lost!
     // Score: ${scoreHandler}
