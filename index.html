@@ -12,8 +12,11 @@
 <body>
 
     <div class="menu__container">
+        <div class="menu__text">You lost!</div>
+        <div class="menu__score"></div>
         <button class="menu__item play">PLAY</button>
         <button class="menu__item rank">RANKING</button>
+
     </div>
     <div class="start__timer"></div>
     <div class="container">
@@ -28,7 +31,13 @@
                 <div class="life"></div>
                 <div class="life"></div>
             </div>
-            <div class="score">Your score: 0</div>
+
+            <div class="score">
+                <button class="pause__container">
+                    <div class="pause__item"></div>
+                </button>
+                <div>Your score: 0</div>
+            </div>
 
         </div>
         <div class="keyboard">
@@ -95,17 +104,20 @@
                 <div data-key="188" class="key one">&lt;</div>
                 <div data-key="190" class="key one">></div>
                 <div data-key="191" class="key one">/</div>
-                <div data-key="16" class="key two-two-half r">shift</div>
+                <div class="empty__key two-two-half r">shift</div>
             </section>
 
             <section class="key-row">
                 <div data-key="17" class="key one-one-half l">ctrl</div>
-                <!-- <div class="key one-one-half "></div> -->
+                <div data-key="18" class="key one-one-half ">alt</div>
                 <div data-key="32" class="key space">
                     <!-- Spacebar -->
                 </div>
                 <!-- <div class="key one-one-half "></div> -->
-                <div data-key="17" class="key one-one-half r">ctrl</div>
+                <!-- <div data-key="17" class="key one-one-half r">ctrl</div> -->
+                <div class="empty__key one-one-half ">alt</div>
+                <div class="empty__key one-one-half r">ctrl</div>
+
                 <!-- <div class="arrowkey-container two-two-half"> -->
             </section>
 
@@ -113,6 +125,7 @@
 
     </div>
     <script src="App.js"></script>
+
 </body>
 
 </html>

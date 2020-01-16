@@ -2,14 +2,16 @@
 const allKeys = [...document.querySelectorAll(".key")];
 const score = document.querySelector(".score");
 const rainbowBtn = document.querySelector(".rainbow__switch");
-let lifes = [...document.querySelectorAll(".life")];
+const lifes = [...document.querySelectorAll(".life")];
 const playBtn = document.querySelector(".play");
 const rankBtn = document.querySelector(".rank");
 const menuContainerDiv = document.querySelector(".menu__container");
 const containerDiv = document.querySelector(".container");
 const startTimerDiv = document.querySelector(".start__timer");
-const lifesDiv = document.querySelector(".lifes");
-const div = document.createElement("div");
+const menuScore = document.querySelector(".menu__score");
+const menuText = document.querySelector(".menu__text");
+
+
 const Colors = {
   r: 0,
   g: 0,
@@ -23,16 +25,12 @@ let timer = 2000;
 let startTimer = 3;
 let rainbowFlag = false;
 let stopRandIndexFlag = false;
+let lives = [1,1,1];
 
-// div.classList.add("life");
-// lifesDiv.appendChild(div);
 
-const startGame = () => {
-  console.log("xd");
-  menuContainerDiv.style.transform = "translate(-50%,-200%)";
-  containerDiv.style.filter = "blur(0)";
-
+const timerIntervalFnc = () => {
   startTimerInterval = setInterval(() => {
+    startTimerDiv.style.opacity = 1;
     if (startTimer === 0) {
       clearInterval(startTimerInterval);
       startTimerDiv.style.opacity = 0;
@@ -41,8 +39,18 @@ const startGame = () => {
         randKeyIndexFnc();
       }, 500);
     }
-    startTimerDiv.textContent = startTimer--;
+  startTimerDiv.textContent = startTimer--;
   }, 1000);
+}
+const startGame = () => {
+  console.log("xd");
+  menuContainerDiv.style.transform = "translate(-50%,-200%)";
+  containerDiv.style.filter = "blur(0)";
+  startTimer = 3;
+  timer = 2000;
+  lifes.forEach(life=>life.classList.remove("life--dead"))
+  lives = [1,1,1];
+  timerIntervalFnc()
 };
 
 const doRainbowInterval = () => {
@@ -68,16 +76,7 @@ const rainbowStop = () => {
   rainbowFlag = false;
 };
 
-rainbowBtn.addEventListener("click", () => {
-  if (rainbowFlag) {
-    rainbowStop();
-    return;
-  }
-  rainbowBtn.textContent = "OFF";
-  rainbowBtn.classList.add("button--active");
-  rainbowFlag = true;
-  doRainbowInterval();
-});
+
 
 // Random key picker
 
@@ -85,34 +84,46 @@ const checkTime = () => {
   if (allKeys[randomKeyIndex].classList.contains("key--active")) {
     setTimeout(() => {
       if (allKeys[randomKeyIndex].classList.contains("key--active")) {
-        lifes[lifes.length - 1].classList.remove("life");
-        lifes.splice(lifes.length - 1);
+        renderLives()
       }
     }, timer - 60);
   }
 };
 const checkLifes = () => {
-  if (lifes.length == 0) {
+  if (!lives.includes(1)) {
     menuContainerDiv.style.transform = "translate(-50%,-50%)";
     containerDiv.style.filter = "blur(3px)";
+    menuScore.style.visibility = "visible"
+    menuText.style.visibility = "visible";
+    menuScore.textContent= `Score: ${scoreHandler}`
+    playBtn.textContent = "PLAY AGAIN";
+    rankBtn.style.display = "none";
+    // menuContainerDiv.innerHTML = `
 
-    // playBtn.textContent = "PLAY AGAIN";
-    // rankBtn.style.display = "none";
-    // menuContainerDiv.textContent = `
-    // You Lost!
-    // Score: ${scoreHandler}
+    // <div>Score: ${scoreHandler}</div>
     // `;
     stopRandIndexFlag = false;
-    startTimer = 3;
-    timer = 2000;
-    lifes = [...document.querySelectorAll(".life")];
+    
 
-    lifes.forEach(life => life.classList.add("life"));
   }
 };
+
+const renderLives = () => {
+  lives = lives.map((e,i,a)=>{
+    if(a[i+1]){
+        return a[i+1]==0?0:1
+    }else{
+        return 0
+    }
+  })
+  for(let i =0;i<lives.length;i++){
+    if(lives[i]==0){
+      lifes[i].classList.add('life--dead')
+    }
+  }
+}
 const randKeyIndexFnc = () => {
   checkLifes();
-
   if (stopRandIndexFlag) {
     if (scoreHandler % 5 == 0 && scoreHandler != 0) {
       timer -= 100;
@@ -135,7 +146,7 @@ const randKeyIndexFnc = () => {
 };
 
 const pickRandomKey = e => {
-
+  e.preventDefault();
   console.log(`Kliknales: ${e.keyCode}`);
 
   const drawnKey = allKeys[randomKeyIndex].dataset.key;
@@ -157,15 +168,14 @@ const pickRandomKey = e => {
       pressedCorrectKey.classList.remove("key--active");
     }
   } else {
-
+  
     // Checking number of lifes
-
+    
     checkLifes();
 
     //Taking one life 
 
-    lifes[lifes.length - 1].classList.remove("life");
-    lifes.splice(lifes.length - 1);
+    renderLives()
 
     // pressedCorrectKey.classList.add("key--correct");
     
@@ -193,5 +203,18 @@ const pickRandomKey = e => {
     "---------------------------------------------------------------------------------------"
   );
 };
+
+
 window.addEventListener("keydown", pickRandomKey);
 playBtn.addEventListener("click", startGame);
+
+rainbowBtn.addEventListener("click", () => {
+  if (rainbowFlag) {
+    rainbowStop();
+    return;
+  }
+  rainbowBtn.textContent = "OFF";
+  rainbowBtn.classList.add("button--active");
+  rainbowFlag = true;
+  doRainbowInterval();
+});
