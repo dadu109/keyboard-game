@@ -46,6 +46,7 @@ const startGame = () => {
   console.log("xd");
   menuContainerDiv.style.transform = "translate(-50%,-200%)";
   containerDiv.style.filter = "blur(0)";
+  scoreHandler = 0;
   startTimer = 3;
   timer = 2000;
   lifes.forEach(life=>life.classList.remove("life--dead"))
