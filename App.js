@@ -148,6 +148,7 @@ const randKeyIndexFnc = () => {
 
 const pickRandomKey = e => {
   e.preventDefault();
+  if (startTimer != 0){
   console.log(`Kliknales: ${e.keyCode}`);
 
   const drawnKey = allKeys[randomKeyIndex].dataset.key;
@@ -203,6 +204,7 @@ const pickRandomKey = e => {
   console.log(
     "---------------------------------------------------------------------------------------"
   );
+  }
 };
 
 
