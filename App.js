@@ -135,14 +135,21 @@ const randKeyIndexFnc = () => {
 };
 
 const pickRandomKey = e => {
+
   console.log(`Kliknales: ${e.keyCode}`);
+
   const drawnKey = allKeys[randomKeyIndex].dataset.key;
+
   const pressedCorrectKey = document.querySelector(
     `.key[data-key="${drawnKey}"]`
   );
+
   const pressedWrongKey = document.querySelector(
     `.key[data-key="${e.keyCode}"]`
   );
+
+  // Adding point to score
+
   if (drawnKey == e.keyCode) {
     if (!pressedCorrectKey.classList.contains("key--correct")) {
       scoreHandler++;
@@ -150,16 +157,29 @@ const pickRandomKey = e => {
       pressedCorrectKey.classList.remove("key--active");
     }
   } else {
+
+    // Checking number of lifes
+
     checkLifes();
+
+    //Taking one life 
 
     lifes[lifes.length - 1].classList.remove("life");
     lifes.splice(lifes.length - 1);
+
     // pressedCorrectKey.classList.add("key--correct");
+    
+    // Removing gold border from key
+
     allKeys[randomKeyIndex].classList.remove("key--active");
+
+    // Array with keys that contains red border
 
     const containsClassKeyWrong = allKeys.filter(key =>
       key.classList.contains("key--wrong")
     );
+    
+    // showing wrong clicked key with red border
     if (containsClassKeyWrong.length === 0) {
       pressedWrongKey.classList.add("key--wrong");
       setTimeout(() => pressedWrongKey.classList.remove("key--wrong"), 400);
