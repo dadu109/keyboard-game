@@ -1,6 +1,5 @@
-//Keyboard random colors generator
 const allKeys = [...document.querySelectorAll(".key")];
-const score = document.querySelector(".score");
+const score = document.querySelector(".score__counter");
 const rainbowBtn = document.querySelector(".rainbow__switch");
 const lifes = [...document.querySelectorAll(".life")];
 const playBtn = document.querySelector(".play");
@@ -10,13 +9,9 @@ const containerDiv = document.querySelector(".container");
 const startTimerDiv = document.querySelector(".start__timer");
 const menuScore = document.querySelector(".menu__score");
 const menuText = document.querySelector(".menu__text");
+const pauseBtn = document.querySelector(".pause__container");
+const unpause = document.querySelector(".unpause");
 
-
-const Colors = {
-  r: 0,
-  g: 0,
-  b: 0
-};
 let scoreHandler = 0;
 let rainbowInterval;
 let startTimerInterval;
@@ -25,8 +20,19 @@ let timer = 2000;
 let startTimer = 3;
 let rainbowFlag = false;
 let stopRandIndexFlag = false;
-let lives = [1,1,1];
+let pauseFlag = true;
+let lives = [1, 1, 1];
+let randKeyIndexTimeout;
+let rmvKeyActiveTimeout;
+let checkTimeTimeout;
 
+let xd = true;
+
+const Colors = {
+  r: 0,
+  g: 0,
+  b: 0
+};
 
 const timerIntervalFnc = () => {
   startTimerInterval = setInterval(() => {
@@ -39,21 +45,66 @@ const timerIntervalFnc = () => {
         randKeyIndexFnc();
       }, 500);
     }
-  startTimerDiv.textContent = startTimer--;
+    startTimerDiv.textContent = startTimer--;
   }, 1000);
-}
+};
+
 const startGame = () => {
   console.log("xd");
   menuContainerDiv.style.transform = "translate(-50%,-200%)";
   containerDiv.style.filter = "blur(0)";
   scoreHandler = 0;
+  score.textContent = `Your score: ${scoreHandler}`;
   startTimer = 3;
   timer = 2000;
-  lifes.forEach(life=>life.classList.remove("life--dead"))
-  lives = [1,1,1];
-  timerIntervalFnc()
+  lifes.forEach(life => life.classList.remove("life--dead"));
+  lives = [1, 1, 1];
+  timerIntervalFnc();
 };
 
+const Timer = function(callback, delay) {
+  var timerId,
+    start,
+    remaining = delay;
+
+  this.pause = function() {
+    window.clearTimeout(timerId);
+    remaining -= Date.now() - start;
+    console.log("pauza");
+  };
+
+  this.resume = function() {
+    start = Date.now();
+    window.clearTimeout(timerId);
+    timerId = window.setTimeout(callback, remaining);
+    console.log(" koniec pauza");
+  };
+
+  this.resume();
+};
+
+const pauseGame = () => {
+  if (stopRandIndexFlag) {
+    containerDiv.style.filter = "blur(3px)";
+    unpause.style.visibility = "visible";
+    stopRandIndexFlag = false;
+    pauseFlag = false;
+    rmvKeyActiveTimeout.pause();
+    randKeyIndexTimeout.pause();
+    checkTimeTimeout.pause();
+  }
+};
+const unPause = () => {
+  if (!stopRandIndexFlag) {
+    containerDiv.style.filter = "blur(0)";
+    unpause.style.visibility = "hidden";
+    pauseFlag = true;
+    stopRandIndexFlag = true;
+    rmvKeyActiveTimeout.resume();
+    randKeyIndexTimeout.resume();
+    checkTimeTimeout.resume();
+  }
+};
 const doRainbowInterval = () => {
   if (rainbowFlag) {
     Colors.r = Math.floor(Math.random() * 254);
@@ -77,140 +128,146 @@ const rainbowStop = () => {
   rainbowFlag = false;
 };
 
-
-
 // Random key picker
 
-const checkTime = () => {
+const checkTime = e => {
   if (allKeys[randomKeyIndex].classList.contains("key--active")) {
-    setTimeout(() => {
+    checkTimeTimeout = new Timer(() => {
       if (allKeys[randomKeyIndex].classList.contains("key--active")) {
-        renderLives()
+        renderLives();
       }
-    }, timer - 60);
+      // allKeys.forEach(key => (key.e.keyCode.disabled = true));
+      // setTimeout(() => if(e.keyCode=9){
+
+      // }, timer - 500);
+      console.log(allKeys[randomKeyIndex]);
+    }, timer - 20);
   }
 };
 const checkLifes = () => {
-  if (!lives.includes(1)) {
-    menuContainerDiv.style.transform = "translate(-50%,-50%)";
-    containerDiv.style.filter = "blur(3px)";
-    menuScore.style.visibility = "visible"
-    menuText.style.visibility = "visible";
-    menuScore.textContent= `Score: ${scoreHandler}`
-    playBtn.textContent = "PLAY AGAIN";
-    rankBtn.style.display = "none";
-    // menuContainerDiv.innerHTML = `
-
-    // <div>Score: ${scoreHandler}</div>
-    // `;
-    stopRandIndexFlag = false;
-    
-
+  if (pauseFlag) {
+    if (!lives.includes(1)) {
+      rmvKeyActiveTimeout.pause();
+      randKeyIndexTimeout.pause();
+      checkTimeTimeout.pause();
+      menuContainerDiv.style.transform = "translate(-50%,-50%)";
+      containerDiv.style.filter = "blur(3px)";
+      menuScore.style.visibility = "visible";
+      menuText.style.visibility = "visible";
+      menuScore.textContent = `Score: ${scoreHandler}`;
+      playBtn.textContent = "PLAY AGAIN";
+      rankBtn.style.display = "none";
+      stopRandIndexFlag = false;
+      startTimer = 3;
+    }
   }
 };
 
 const renderLives = () => {
-  lives = lives.map((e,i,a)=>{
-    if(a[i+1]){
-        return a[i+1]==0?0:1
-    }else{
-        return 0
+  lives = lives.map((e, i, a) => {
+    if (a[i + 1]) {
+      return a[i + 1] == 0 ? 0 : 1;
+    } else {
+      return 0;
     }
-  })
-  for(let i =0;i<lives.length;i++){
-    if(lives[i]==0){
-      lifes[i].classList.add('life--dead')
+  });
+  for (let i = 0; i < lives.length; i++) {
+    if (lives[i] == 0) {
+      lifes[i].classList.add("life--dead");
     }
   }
-}
+};
 const randKeyIndexFnc = () => {
-  checkLifes();
-  if (stopRandIndexFlag) {
-    if (scoreHandler % 5 == 0 && scoreHandler != 0) {
-      timer -= 100;
-      if (timer === 250) {
-        timer = 250;
+  if (xd) {
+    if (stopRandIndexFlag) {
+      checkLifes();
+      if (scoreHandler % 5 == 0 && scoreHandler != 0) {
+        timer -= 100;
+        if (timer === 250) {
+          timer = 250;
+        }
       }
+      console.log(`Czas: ${timer}`);
+      randomKeyIndex = Math.floor(Math.random() * allKeys.length);
+      console.log(randomKeyIndex);
+      allKeys[randomKeyIndex].classList.add("key--active");
+      rmvKeyActiveTimeout = new Timer(() => {
+        allKeys[randomKeyIndex].classList.remove("key--active");
+      }, timer - 10);
+      // setTimeout(() => {}, );
+      checkTime();
+
+      randKeyIndexTimeout = new Timer(randKeyIndexFnc, timer);
     }
-    console.log(`Czas: ${timer}`);
-
-    randomKeyIndex = Math.floor(Math.random() * allKeys.length);
-    console.log(randomKeyIndex);
-    allKeys[randomKeyIndex].classList.add("key--active");
-    setTimeout(() => {
-      allKeys[randomKeyIndex].classList.remove("key--active");
-    }, timer - 50);
-    checkTime();
-
-    setTimeout(randKeyIndexFnc, timer);
   }
 };
 
 const pickRandomKey = e => {
   e.preventDefault();
-  if (startTimer != 0){
-  console.log(`Kliknales: ${e.keyCode}`);
+  if (pauseFlag) {
+    if (startTimer === -1) {
+      console.log(`Kliknales: ${e.keyCode}`);
 
-  const drawnKey = allKeys[randomKeyIndex].dataset.key;
+      const drawnKey = allKeys[randomKeyIndex].dataset.key;
 
-  const pressedCorrectKey = document.querySelector(
-    `.key[data-key="${drawnKey}"]`
-  );
+      const pressedCorrectKey = document.querySelector(
+        `.key[data-key="${drawnKey}"]`
+      );
 
-  const pressedWrongKey = document.querySelector(
-    `.key[data-key="${e.keyCode}"]`
-  );
+      const pressedWrongKey = document.querySelector(
+        `.key[data-key="${e.keyCode}"]`
+      );
 
-  // Adding point to score
+      // Adding point to score
 
-  if (drawnKey == e.keyCode) {
-    if (!pressedCorrectKey.classList.contains("key--correct")) {
-      scoreHandler++;
-      score.textContent = `Your score: ${scoreHandler}`;
-      pressedCorrectKey.classList.remove("key--active");
+      if (drawnKey == e.keyCode) {
+        if (!pressedCorrectKey.classList.contains("key--correct")) {
+          scoreHandler++;
+          score.textContent = `Your score: ${scoreHandler}`;
+          pressedCorrectKey.classList.remove("key--active");
+        }
+      } else {
+        // Checking number of lifes
+
+        checkLifes();
+
+        //Taking one life
+
+        renderLives();
+
+        // pressedCorrectKey.classList.add("key--correct");
+
+        // Removing gold border from key
+
+        allKeys[randomKeyIndex].classList.remove("key--active");
+
+        // Array with keys that contains red border
+
+        const containsClassKeyWrong = allKeys.filter(key =>
+          key.classList.contains("key--wrong")
+        );
+
+        // showing wrong clicked key with red border
+        if (containsClassKeyWrong.length === 0) {
+          pressedWrongKey.classList.add("key--wrong");
+          setTimeout(() => pressedWrongKey.classList.remove("key--wrong"), 400);
+        }
+        // rainbowBtn.disabled = true;
+        // rainbowStop();
+      }
+
+      console.log(`Miales kliknac: ${allKeys[randomKeyIndex].dataset.key}`);
+      console.log(
+        "---------------------------------------------------------------------------------------"
+      );
     }
-  } else {
-  
-    // Checking number of lifes
-    
-    checkLifes();
-
-    //Taking one life 
-
-    renderLives()
-
-    // pressedCorrectKey.classList.add("key--correct");
-    
-    // Removing gold border from key
-
-    allKeys[randomKeyIndex].classList.remove("key--active");
-
-    // Array with keys that contains red border
-
-    const containsClassKeyWrong = allKeys.filter(key =>
-      key.classList.contains("key--wrong")
-    );
-    
-    // showing wrong clicked key with red border
-    if (containsClassKeyWrong.length === 0) {
-      pressedWrongKey.classList.add("key--wrong");
-      setTimeout(() => pressedWrongKey.classList.remove("key--wrong"), 400);
-    }
-    // rainbowBtn.disabled = true;
-    // rainbowStop();
-  }
-
-  console.log(`Miales kliknac: ${allKeys[randomKeyIndex].dataset.key}`);
-  console.log(
-    "---------------------------------------------------------------------------------------"
-  );
   }
 };
 
-
 window.addEventListener("keydown", pickRandomKey);
 playBtn.addEventListener("click", startGame);
-
+pauseBtn.addEventListener("click", pauseGame);
+unpause.addEventListener("click", unPause);
 rainbowBtn.addEventListener("click", () => {
   if (rainbowFlag) {
     rainbowStop();

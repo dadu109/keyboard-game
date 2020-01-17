@@ -9,6 +9,24 @@ body {
 * {
   box-sizing: border-box; }
 
+.unpause {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 4em;
+  border: 3px solid gold;
+  background-color: #171717;
+  padding: .3em;
+  z-index: 3;
+  visibility: hidden;
+  cursor: pointer;
+  transition: all .8s ease-in-out; }
+
+.unpause:focus {
+  outline: none; }
+
 .container {
   height: 100vh;
   flex-direction: column;
@@ -85,7 +103,8 @@ body {
   align-items: center;
   font-size: 2em;
   color: white;
-  flex-wrap: nowrap; }
+  flex-wrap: nowrap;
+  width: 300px; }
 
 .pause__container {
   margin: 0 14px 0 0;
